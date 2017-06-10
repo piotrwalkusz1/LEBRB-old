@@ -1,0 +1,12 @@
+package com.piotrwalkusz.lebrb
+
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+
+@SpringBootApplication
+class LEBRBApplication {
+
+    static void main(String[] args) {
+		SpringApplication.run LEBRBApplication, args
+	}
+}
