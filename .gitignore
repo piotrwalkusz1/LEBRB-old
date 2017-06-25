@@ -2,6 +2,8 @@
 /build/
 /out/
 !gradle/wrapper/gradle-wrapper.jar
+/.scannerwork/
+/jenkins/
 
 ### STS ###
 .apt_generated

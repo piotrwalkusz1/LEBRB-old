@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script src="/js/jquery-3.2.1.min.js"></script>
+    <script th:inline="javascript" th:assert="${@environment.getProperty('spring.http.multipart.max-file-size').endsWith('MB')}">
+        function validate() {
+            var files = $("input[name='file']").get(0).files
+            if (files.length === 0) {
+                $("body").prepend('<span>Choose a file</span>')
+                return false
+            }
+            var maxSize = [[${@environment.getProperty('spring.http.multipart.max-file-size')}]].slice(0, -2) * 1024 * 1024
+            if (files[0].size > maxSize) {
+                $("body").prepend('<span>The file is too large</span>')
+                return false
+            }
+
+            return true
+        }
+    </script>
+</head>
+<body>
+<form action="#" th:action="@{/wordscounter}" onsubmit="return validate()" method="post" enctype="multipart/form-data">
+    <p>File: <input type="file" name="file"/></p>
+    <input type="submit"/>
+</form>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <script th:if="${result}" type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script th:if="${result}" th:inline="javascript" type="text/javascript">
+        /*<![CDATA[*/
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var coverage = [[${result.getCoverage(1000)}]];
+
+            var array = [['Top frequent words', 'Coverage'], [0, 0]];
+
+            for (var i = 0; i < coverage.length; i++) {
+                array.push([i + 1, coverage[i]]);
+            }
+
+            var data = google.visualization.arrayToDataTable(array);
+
+            var options = {
+                curveType: 'function'
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart'));
+
+            chart.draw(data, options);
+        }
+        /*]]>*/
+    </script>
+</head>
+<body>
+    <span th:text="${error}"></span>
+    <div th:if="${result}" id="result">
+        <span th:inline="text">Total number of words: [[${result.getTotalNumberOfWords()}]]</span>
+        <table>
+            <thead>
+                <tr>
+                    <td>Word</td><td>Translation</td><td>Count</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:classappend="${knownWords != null and knownWords.contains(word.key)} ? 'known-word'" th:each="word : ${result.getNumberOfEachWordSortedDesc()}">
+                    <td th:text="${word.key}"></td>
+                    <td th:text="${@translatorService.translate(word.key, T(com.piotrwalkusz.lebrb.common.Language).English, T(com.piotrwalkusz.lebrb.common.Language).Polish)}"></td>
+                    <td th:text="${word.value}"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="chart" style="width: 900px; height: 500px"></div>
+    </div>
+</body>
+</html>
