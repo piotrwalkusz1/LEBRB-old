@@ -171,16 +171,29 @@ class StepDefinitions {
         userRepository.save(userEntity)
     }
 
-    @Then('^A table row with a cell with "([^"]*)" text should have "([^"]*)" class$')
-    void table_row_with_cell_with_text_should_have_class(String text, String className) {
+    @Then('^A row containing a cell with "([^"]*)" text should have "([^"]*)" class$')
+    void row_containing_cell_with_text_should_have_class(String text, String className) {
         def row = driver.findElement(By.xpath("//td[contains(text(), '$text')]/.."))
         assert row.getAttribute('class').tokenize(' ,').contains(className)
     }
 
-    @Then('^A table row with a cell with "([^"]*)" text should not have "([^"]*)" class$')
-    void table_row_with_cell_with_text_should_not_have_class(String text, String className) {
+    @Then('^A row containing a cell with "([^"]*)" text should not have "([^"]*)" class$')
+    void row_containing_cell_with_text_should_not_have_class(String text, String className) {
         def row = driver.findElement(By.xpath("//td[contains(text(), '$text')]/.."))
         assert ! row.getAttribute('class').tokenize(' ,').contains(className)
+    }
+
+    @When('^I click the button in row containing cell with "([^"]*)" text$')
+    void i_click_the_button_in_row_containing_cell_with_text(String text) {
+        def row = driver.findElement(By.xpath("//td[contains(text(), '$text')]/.."))
+        def button = row.findElement(By.xpath("//*[contains(@class, '-btn')]"))
+        button.click()
+    }
+
+    @Then('^I should download a file with content$')
+    void i_should_download_a_file_with_content(String arg1) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 
     private void uploadFile(String name) {

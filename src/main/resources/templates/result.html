@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <script th:if="${result}" type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
     <script th:if="${result}" type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script th:if="${result}" th:inline="javascript" type="text/javascript">
         /*<![CDATA[*/
@@ -31,6 +32,31 @@
         }
         /*]]>*/
     </script>
+    <script th:if="${result}" th:inline="javascript">
+        /*<![CDATA[*/
+        function markToLearn(button) {
+            button.text = "Delete";
+            button.onclick = function() {unmarkToLearn(button)};
+            button.parentNode.parentNode.classList.add('to-learn');
+        }
+
+        function unmarkToLearn(button) {
+            button.text = "To learn";
+            button.onclick = function() {markToLearn(button)};
+            button.parentNode.parentNode.classList.remove('to-learn');
+        }
+
+        function downloadWords() {
+            var result = "";
+            $('.to-learn').each(function (idx, row) {
+                if (idx !== 0)
+                    result += '\n';
+                result += row.children[0].textContent + "; " + row.children[1].textContent;
+            });
+            document.location = 'data:Application/octet-stream,' + encodeURIComponent(result);
+        }
+        /*]]>*/
+    </script>
 </head>
 <body>
     <span th:text="${error}"></span>
@@ -39,7 +65,7 @@
         <table>
             <thead>
                 <tr>
-                    <td>Word</td><td>Translation</td><td>Count</td>
+                    <td>Word</td><td>Translation</td><td>Count</td><td></td>
                 </tr>
             </thead>
             <tbody>
@@ -47,10 +73,12 @@
                     <td th:text="${word.key}"></td>
                     <td th:text="${@translatorService.translate(word.key, T(com.piotrwalkusz.lebrb.common.Language).English, T(com.piotrwalkusz.lebrb.common.Language).Polish)}"></td>
                     <td th:text="${word.value}"></td>
+                    <td><button onclick="markToLearn(this)" class="to-learn-btn">To learn</button></td>
                 </tr>
             </tbody>
         </table>
         <div id="chart" style="width: 900px; height: 500px"></div>
     </div>
+    <button onclick="downloadWords()">Download words</button>
 </body>
 </html>
