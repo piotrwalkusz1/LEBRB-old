@@ -1,0 +1,4 @@
+include 'legacy'
+include 'translator'
+include 'web'
+include 'wordscounter'
